@@ -8,9 +8,10 @@ async function runAllModels() {
 
   await Promise.all([
     // runModel("Linear Regression", "./Linear_Regression.onnx", tensorX, "predLinear"),
-    runModel("MLP", "./DLNet_WalmartData.onnx", tensorX, "predMLP"),
-    // runModel("Deep Learning with 2 layers", "./Deep_Regression.onnx", tensorX, "predDeep"),
-    // runModel("Linear plus Nonlinear", "./Hybrid_Regression.onnx", tensorX, "predHybrid")
+    // runModel("MLP", "./MLP_Regression.onnx", tensorX, "predMLP"),
+    runModel("Deep Learning", "./DLNet_WalmartData.onnx", tensorX, "predDeep"),
+    // runModel("Hybrid", "./Hybrid_Regression.onnx", tensorX, "predHybrid"),
+    // runModel("XGBoost", "./XGBoost_Regression.onnx", tensorX, "predXGB")
   ]);
 }
 
@@ -23,13 +24,12 @@ async function runModel(name, modelPath, tensorX, divId) {
     const session = await ort.InferenceSession.create(modelPath + "?v=" + Date.now());
     const results = await session.run({ input1: tensorX });
 
-    // handle the first output tensor
     const output = Object.values(results)[0].data;
     const prediction = output[0].toFixed(2);
 
     div.innerHTML = `
       <h3>${name}</h3>
-      <p><b>Predicted Sales:</b> $${prediction}</p>`;
+      <p><b>Predicted Weekly Sales:</b> $${prediction}</p>`;
   } catch (e) {
     console.error(`Error in ${name}:`, e);
     div.innerHTML = `<p style="color:red;">Error: ${e.message}</p>`;
