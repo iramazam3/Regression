@@ -76,6 +76,13 @@
       border-radius: 10px;
       box-shadow: 0 2px 6px rgba(0, 0, 0, 0.1);
     }
+
+    /* Make XGBoost centered if it’s fifth */
+    #predXGB {
+      grid-column: span 2;
+      width: 50%;
+      margin: auto;
+    }
   </style>
 </head>
 
@@ -83,7 +90,7 @@
   <h1>Walmart Sales Forecast (Regression Models)</h1>
 
   <div id="input-area">
-    <h2>Enter Store and Economic Factors</h2>
+    <h2>Enter Economic and Store Features</h2>
 
     <label>Temperature (°F):</label><input type="number" id="input0" step="any"><br>
     <label>Fuel Price ($):</label><input type="number" id="input1" step="any"><br>
@@ -97,19 +104,20 @@
     <label>Size:</label><input type="number" id="input9" step="any"><br>
 
     <div style="margin-top: 15px;">
-      <button id="btnRun" class="btn" onclick="runAllModels()" disabled>Run All Regression Models</button>
+      <button id="btnRun" class="btn" onclick="runAllModels()" disabled>Run All Models</button>
     </div>
   </div>
 
   <div id="models">
-    <div class="model-box" id="predLinear"><h3>Linear Regression Output</h3><p>Waiting for input...</p></div>
-    <div class="model-box" id="predMLP"><h3>MLP Output</h3><p>Waiting for input...</p></div>
-    <div class="model-box" id="predDeep"><h3>Deep Learning with 2 layers Output</h3><p>Waiting for input...</p></div>
-    <div class="model-box" id="predHybrid"><h3>Linear plus Nonlinear Output</h3><p>Waiting for input...</p></div>
+    <div class="model-box" id="predLinear"><h3>Linear Regression</h3><p>Waiting for input...</p></div>
+    <div class="model-box" id="predMLP"><h3>MLP</h3><p>Waiting for input...</p></div>
+    <div class="model-box" id="predDeep"><h3>Deep Learning with 2 layers</h3><p>Waiting for input...</p></div>
+    <div class="model-box" id="predHybrid"><h3>Linear plus Nonlinear</h3><p>Waiting for input...</p></div>
+    <div class="model-box" id="predXGB"><h3>XGBoost Model</h3><p>Waiting for input...</p></div>
   </div>
 
   <script>
-    // Enable button only when all fields are filled
+    // Enable "Run" button only when all inputs are filled
     function validateInputs() {
       let allFilled = true;
       for (let i = 0; i < 10; i++) {
