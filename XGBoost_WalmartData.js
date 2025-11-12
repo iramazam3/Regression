@@ -1,5 +1,5 @@
 function score(input) {
-    var var0;
+    var var0 = 0.0;
     if (input[2] < 90.0) {
         if (input[2] < 14.0) {
             if (input[13] < 103681.0) {
