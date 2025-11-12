@@ -1,8 +1,8 @@
 
 // Collect inputs as Float32Array
 function collectInputs() {
-  const x = new Float32Array(10);
-  for (let i = 0; i < 10; i++) {
+  const x = new Float32Array(3);
+  for (let i = 0; i < 3; i++) {
     x[i] = parseFloat(document.getElementById(`input${i}`).value) || 0;
   }
   return x;
@@ -19,7 +19,7 @@ async function runSelectedModel() {
     outputText.textContent = `Loading ${modelFile}...`;
 
     const x = collectInputs();
-    const tensorX = new ort.Tensor("float32", x, [1, 10]);
+    const tensorX = new ort.Tensor("float32", x, [1, 3]);
 
     const session = await ort.InferenceSession.create(`./${modelFile}?v=${Date.now()}`);
     const inputName = session.inputNames[0] || "input";
