@@ -18,7 +18,7 @@ function runXGBModel() {
   const prediction = score(input);   // score() comes from xgb_model.js
 
   document.getElementById("outputText").innerHTML = `
-    <div><b>Model:</b> XGBoost (JavaScript)</div>
+    <div><b>Model:</b> XGBoost</div>
     <div><b>Predicted Weekly Sales:</b> ${formatCurrency(prediction)}</div>
   `;
 }
@@ -49,7 +49,7 @@ async function runONNXModel(modelFile) {
 async function runSelectedModel() {
   const model = document.getElementById("modelSelect").value;
 
-  if (model === "XGBoost_WalmartData.js") {
+  if (model === "XGBoost_js") {
     runXGBModel();
   } else {
     await runONNXModel(model);
