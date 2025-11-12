@@ -5,8 +5,13 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
   <title>Walmart Sales Forecast (Regression Models)</title>
 
-  <!-- ONNX Runtime Web -->
+  <!-- ONNX Runtime Web (for .onnx models) -->
   <script src="https://cdn.jsdelivr.net/npm/onnxruntime-web/dist/ort.min.js"></script>
+
+  <!-- JavaScript-exported model (from m2cgen) -->
+  <script src="xgb_model.js"></script>
+
+  <!-- App logic -->
   <script defer src="index.js"></script>
 
   <style>
@@ -24,6 +29,7 @@
     #result { margin-top:20px; background:#fff; border:1px solid #ddd; border-radius:10px; padding:16px; }
   </style>
 </head>
+
 <body>
   <h1>Walmart Sales Forecast (Regression Models)</h1>
 
@@ -55,7 +61,7 @@
         <option value="MLP_WeatherData.onnx">MLP</option>
         <option value="Deep_WeatherData.onnx">Deep Learning with 2 Layers</option>
         <option value="Hybrid_WeatherData.onnx">Linear plus Nonlinear</option>
-        <option value="XGBoost_WeatherData.onnx">XGBoost</option>
+        <option value="XGBoost_WeatherData">XGBoost</option>
       </select>
 
       <button id="runBtn" disabled>Run Model</button>
