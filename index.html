@@ -15,27 +15,67 @@
       background-color: #f7fafc;
       margin: 40px;
     }
-    h1 { text-align: center; color: #2b6cb0; }
-    label { display: inline-block; width: 220px; margin-top: 8px; }
-    input[type="number"], select {
-      width: 150px; padding: 5px; margin: 3px;
-      border: 1px solid #ccc; border-radius: 4px;
+
+    h1 {
+      text-align: center;
+      color: #2b6cb0;
+      margin-bottom: 20px;
     }
+
     #input-area {
-      margin: auto; padding: 20px; width: 80%;
-      border-radius: 10px; background: white;
-      box-shadow: 0 2px 6px rgba(0,0,0,0.1);
+      margin: auto;
+      padding: 20px;
+      width: 90%;
+      border-radius: 10px;
+      background: white;
+      box-shadow: 0 2px 6px rgba(0, 0, 0, 0.1);
     }
+
+    h2 { color: #2d3748; }
+
+    .form-grid {
+      display: flex;
+      gap: 40px;
+      justify-content: space-between;
+    }
+
+    .col {
+      width: 48%;
+    }
+
+    label {
+      display: block;
+      margin-top: 10px;
+      font-weight: bold;
+    }
+
+    input[type="number"], select {
+      width: 100%;
+      padding: 6px;
+      margin-top: 4px;
+      border: 1px solid #ccc;
+      border-radius: 4px;
+    }
+
     .btn {
-      background-color: #2b6cb0; color: white;
-      padding: 10px 18px; border: none;
-      border-radius: 6px; cursor: pointer; margin: 8px;
+      background-color: #2b6cb0;
+      color: white;
+      padding: 10px 18px;
+      border: none;
+      border-radius: 6px;
+      cursor: pointer;
+      margin: 8px;
     }
+
     .btn:hover:enabled { background-color: #2c5282; }
     .btn:disabled { background-color: #a0aec0; cursor: not-allowed; }
+
     #result {
-      margin-top: 20px; background: #fff; padding: 15px;
-      border: 1px solid #ccc; border-radius: 10px;
+      margin-top: 20px;
+      background: #fff;
+      padding: 15px;
+      border: 1px solid #ccc;
+      border-radius: 10px;
       box-shadow: 0 2px 6px rgba(0,0,0,0.1);
     }
   </style>
@@ -47,42 +87,56 @@
   <div id="input-area">
     <h2>Enter Store and Economic Features</h2>
 
-    <label>Store ID:</label><input type="number" id="input0" step="any"><br>
-    <label>Is Holiday:</label>
-    <select id="input1">
-      <option value="">--Select--</option>
-      <option value="0">No</option>
-      <option value="1">Yes</option>
-    </select><br>
-    <label>Department:</label><input type="number" id="input2" step="any"><br>
-    <label>Temperature (°F):</label><input type="number" id="input3" step="any"><br>
-    <label>Fuel Price ($):</label><input type="number" id="input4" step="any"><br>
-    <label>MarkDown1:</label><input type="number" id="input5" step="any"><br>
-    <label>MarkDown2:</label><input type="number" id="input6" step="any"><br>
-    <label>MarkDown3:</label><input type="number" id="input7" step="any"><br>
-    <label>MarkDown4:</label><input type="number" id="input8" step="any"><br>
-    <label>MarkDown5:</label><input type="number" id="input9" step="any"><br>
-    <label>CPI:</label><input type="number" id="input10" step="any"><br>
-    <label>Unemployment (%):</label><input type="number" id="input11" step="any"><br>
-    <label>Store Type:</label>
-    <select id="input12">
-      <option value="">--Select--</option>
-      <option value="1">A</option>
-      <option value="2">B</option>
-      <option value="3">C</option>
-    </select><br>
-    <label>Store Size (sq ft):</label><input type="number" id="input13" step="any"><br>
-    <label>Year:</label><input type="number" id="input14" step="any"><br>
-    <label>Month:</label><input type="number" id="input15" step="any"><br>
-    <label>Week:</label><input type="number" id="input16" step="any"><br>
+    <div class="form-grid">
+
+      <!-- LEFT COLUMN -->
+      <div class="col">
+        <label>Store ID:</label><input type="number" id="input0" step="any">
+        <label>Is Holiday:</label>
+        <select id="input1">
+          <option value="">--Select--</option>
+          <option value="0">No</option>
+          <option value="1">Yes</option>
+        </select>
+
+        <label>Department:</label><input type="number" id="input2" step="any">
+        <label>Temperature (°F):</label><input type="number" id="input3" step="any">
+        <label>Fuel Price ($):</label><input type="number" id="input4" step="any">
+
+        <label>MarkDown1:</label><input type="number" id="input5" step="any">
+        <label>MarkDown2:</label><input type="number" id="input6" step="any">
+        <label>MarkDown3:</label><input type="number" id="input7" step="any">
+      </div>
+
+      <!-- RIGHT COLUMN -->
+      <div class="col">
+        <label>MarkDown4:</label><input type="number" id="input8" step="any">
+        <label>MarkDown5:</label><input type="number" id="input9" step="any">
+
+        <label>CPI:</label><input type="number" id="input10" step="any">
+        <label>Unemployment (%):</label><input type="number" id="input11" step="any">
+
+        <label>Store Type:</label>
+        <select id="input12">
+          <option value="">--Select--</option>
+          <option value="1">A</option>
+          <option value="2">B</option>
+          <option value="3">C</option>
+        </select>
+
+        <label>Store Size (sq ft):</label><input type="number" id="input13" step="any">
+        <label>Year:</label><input type="number" id="input14" step="any">
+        <label>Month:</label><input type="number" id="input15" step="any">
+        <label>Week:</label><input type="number" id="input16" step="any">
+      </div>
+    </div>
 
     <div style="margin-top: 15px;">
-      <label for="modelSelect"><b>Model:</b></label>
+      <label><b>Model:</b></label>
       <select id="modelSelect">
         <option value="Linear_WalmartData.onnx">Linear Regression</option>
         <option value="MLP_WalmartData.onnx">MLP</option>
-        <option value="Deep_WalmartData.onnx">Deep Learning with 2 Layers</option>
-        <option value="Hybrid_WalmartData.onnx">Linear plus Nonlinear</option>
+        <option value="Deep_WalmartData.onnx">Deep Neural Network</option>
       </select>
       <button id="runBtn" class="btn" disabled>Predict Sales</button>
     </div>
@@ -94,15 +148,14 @@
   </div>
 
   <script>
-    // Enable button only when all inputs are filled
     function validateInputs() {
       let allFilled = true;
       for (let i = 0; i < 17; i++) {
         const el = document.getElementById(`input${i}`);
         if (el.tagName === "SELECT") {
           if (el.value === "") allFilled = false;
-        } else {
-          if (el.value === "") allFilled = false;
+        } else if (el.value === "") {
+          allFilled = false;
         }
       }
       document.getElementById("runBtn").disabled = !allFilled;
@@ -110,10 +163,12 @@
 
     window.addEventListener("DOMContentLoaded", () => {
       for (let i = 0; i < 17; i++) {
-        document.getElementById(`input${i}`).addEventListener("input", validateInputs);
-        document.getElementById(`input${i}`).addEventListener("change", validateInputs);
+        let el = document.getElementById(`input${i}`);
+        el.addEventListener("input", validateInputs);
+        el.addEventListener("change", validateInputs);
       }
     });
   </script>
+
 </body>
 </html>
