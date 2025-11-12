@@ -2,69 +2,91 @@
 <html lang="en">
 <head>
   <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>Walmart Sales Forecast (Regression Models)</title>
 
-  <!-- ONNX Runtime Web (for .onnx models) -->
+  <!-- ONNX Runtime -->
   <script src="https://cdn.jsdelivr.net/npm/onnxruntime-web/dist/ort.min.js"></script>
-
-  <!-- JavaScript-exported model (from m2cgen) -->
-  <script src="xgb_model.js"></script>
-
-  <!-- App logic -->
   <script defer src="index.js"></script>
 
   <style>
-    body { font-family: Arial, sans-serif; background:#f7fafc; margin: 32px; }
-    h1 { text-align:center; color:#2b6cb0; margin-bottom: 24px; }
-    #panel { max-width: 900px; margin: 0 auto; background:#fff; border:1px solid #ddd; border-radius:10px; padding:20px; }
-    .row { display:flex; flex-wrap:wrap; gap:16px; }
-    .field { flex: 1 1 260px; display:flex; align-items:center; gap:8px; }
-    label { width: 130px; }
-    input[type="number"] { flex:1; padding:6px; border:1px solid #ccc; border-radius:6px; }
-    select { padding:6px; border:1px solid #ccc; border-radius:6px; }
-    .actions { margin-top:16px; display:flex; gap:12px; align-items:center; }
-    button { background:#2b6cb0; color:#fff; border:none; border-radius:6px; padding:10px 16px; cursor:pointer; }
-    button:disabled { background:#a0aec0; cursor:not-allowed; }
-    #result { margin-top:20px; background:#fff; border:1px solid #ddd; border-radius:10px; padding:16px; }
+    body {
+      font-family: Arial, sans-serif;
+      background-color: #f7fafc;
+      margin: 40px;
+    }
+
+    h1 {
+      text-align: center;
+      color: #2b6cb0;
+    }
+
+    h2 { color: #2d3748; }
+
+    label {
+      display: inline-block;
+      width: 220px;
+      margin-top: 8px;
+    }
+
+    input[type="number"], select {
+      width: 150px;
+      padding: 5px;
+      margin: 3px;
+      border: 1px solid #ccc;
+      border-radius: 4px;
+    }
+
+    #input-area {
+      margin: auto;
+      padding: 20px;
+      width: 70%;
+      border-radius: 10px;
+      background: white;
+      box-shadow: 0 2px 6px rgba(0, 0, 0, 0.1);
+    }
+
+    .btn {
+      background-color: #2b6cb0;
+      color: white;
+      padding: 10px 18px;
+      border: none;
+      border-radius: 6px;
+      cursor: pointer;
+      margin: 8px;
+    }
+
+    .btn:hover:enabled { background-color: #2c5282; }
+    .btn:disabled { background-color: #a0aec0; cursor: not-allowed; }
+
+    #result {
+      margin-top: 20px;
+      background: #fff;
+      padding: 15px;
+      border: 1px solid #ccc;
+      border-radius: 10px;
+      box-shadow: 0 2px 6px rgba(0,0,0,0.1);
+    }
   </style>
 </head>
 
 <body>
   <h1>Walmart Sales Forecast (Regression Models)</h1>
 
-  <div id="panel">
-    <div class="row">
-      <div class="field"><label>Store</label><input type="number" id="input0" step="1"></div>
-      <div class="field"><label>IsHoliday</label><input type="number" id="input1" step="1"></div>
-      <div class="field"><label>Dept</label><input type="number" id="input2" step="1"></div>
-      <div class="field"><label>Temperature</label><input type="number" id="input3" step="any"></div>
-      <div class="field"><label>Fuel_Price</label><input type="number" id="input4" step="any"></div>
-      <div class="field"><label>MarkDown1</label><input type="number" id="input5" step="any"></div>
-      <div class="field"><label>MarkDown2</label><input type="number" id="input6" step="any"></div>
-      <div class="field"><label>MarkDown3</label><input type="number" id="input7" step="any"></div>
-      <div class="field"><label>MarkDown4</label><input type="number" id="input8" step="any"></div>
-      <div class="field"><label>MarkDown5</label><input type="number" id="input9" step="any"></div>
-      <div class="field"><label>CPI</label><input type="number" id="input10" step="any"></div>
-      <div class="field"><label>Unemployment</label><input type="number" id="input11" step="any"></div>
-      <div class="field"><label>Type</label><input type="number" id="input12" step="1"></div>
-      <div class="field"><label>Size</label><input type="number" id="input13" step="any"></div>
-      <div class="field"><label>Year</label><input type="number" id="input14" step="1"></div>
-      <div class="field"><label>Month</label><input type="number" id="input15" step="1" min="1" max="12"></div>
-      <div class="field"><label>Week</label><input type="number" id="input16" step="1" min="1" max="53"></div>
-    </div>
+  <div id="input-area">
+    <h2>Enter Data</h2>
 
-    <div class="actions">
+    <label>Store: </label><input type="number" id="input0" step="any"><br>
+    <label>IsHoliday: </label><input type="number" id="input1" step="any"><br>
+    <label>Dept: </label><input type="number" id="input2" step="any"><br>
+    <label>Temperature: </label><input type="number" id="input3" step="any"><br>
+
+    <div style="margin-top: 15px;">
       <label for="modelSelect"><b>Model:</b></label>
       <select id="modelSelect">
-        <option value="Linear_WeatherData.onnx">Linear Regression</option>
-        <option value="MLP_WeatherData.onnx">MLP</option>
-        <option value="Deep_WeatherData.onnx">Deep Learning with 2 Layers</option>
-        <option value="Hybrid_WeatherData.onnx">Linear plus Nonlinear</option>
-        <option value="XGBoost_WeatherData">XGBoost</option>
+        <option value="Linear_WalmartData.onnx">Linear Regression</option>
       </select>
-
-      <button id="runBtn" disabled>Run Model</button>
+      <button id="runBtn" class="btn" disabled>Run Model</button>
     </div>
 
     <div id="result">
@@ -72,5 +94,29 @@
       <div id="outputText">Enter all inputs and select a model.</div>
     </div>
   </div>
+
+  <script>
+    // Enable button only when all inputs are filled
+    function validateInputs() {
+      let allFilled = true;
+      for (let i = 0; i < 10; i++) {
+        const el = document.getElementById(`input${i}`);
+        if (el.tagName === "SELECT") {
+          if (el.value === "") allFilled = false;
+        } else {
+          if (el.value === "") allFilled = false;
+        }
+      }
+      document.getElementById("runBtn").disabled = !allFilled;
+    }
+
+    // Attach listener to all inputs
+    window.addEventListener("DOMContentLoaded", () => {
+      for (let i = 0; i < 10; i++) {
+        document.getElementById(`input${i}`).addEventListener("input", validateInputs);
+        document.getElementById(`input${i}`).addEventListener("change", validateInputs);
+      }
+    });
+  </script>
 </body>
 </html>
