@@ -1,14 +1,18 @@
-
 // Collect inputs as Float32Array
 function collectInputs() {
-  const x = new Float32Array(3);
-  for (let i = 0; i < 3; i++) {
+  const x = new Float32Array(17);
+  for (let i = 0; i < 17; i++) {
     x[i] = parseFloat(document.getElementById(`input${i}`).value) || 0;
   }
   return x;
 }
 
-// Run selected model
+// Format numbers with commas
+function formatCurrency(num) {
+  return num.toLocaleString("en-US", { style: "currency", currency: "USD" });
+}
+
+// Run selected ONNX regression model
 async function runSelectedModel() {
   const modelFile = document.getElementById("modelSelect").value;
   const outputText = document.getElementById("outputText");
@@ -19,22 +23,21 @@ async function runSelectedModel() {
     outputText.textContent = `Loading ${modelFile}...`;
 
     const x = collectInputs();
-    const tensorX = new ort.Tensor("float32", x, [1, 3]);
+    const tensorX = new ort.Tensor("float32", x, [1, 17]);
 
+    // Load model
     const session = await ort.InferenceSession.create(`./${modelFile}?v=${Date.now()}`);
     const inputName = session.inputNames[0] || "input";
     const results = await session.run({ [inputName]: tensorX });
 
+    // Extract first output tensor
     const firstOutput = results[session.outputNames?.[0]] || Object.values(results)[0];
-    const output = firstOutput.data;
+    const prediction = firstOutput.data[0];
 
-    // Get predicted class
-    const predictedSales = Array.isArray(output) ? output[0] : output;
-
-    // Display result
+    // Display prediction
     outputText.innerHTML = `
-      <div><b>Model:</b> ${modelFile.replace(".onnx","")}</div>
-      <div><b>Predicted Sales:</b> $${Number(predictedSales).toFixed(2)}</div>
+      <div><b>Model:</b> ${modelFile.replace(".onnx", "")}</div>
+      <div><b>Predicted Weekly Sales:</b> ${formatCurrency(prediction)}</div>
     `;
   } catch (e) {
     console.error("ONNX runtime error:", e);
@@ -44,7 +47,7 @@ async function runSelectedModel() {
   }
 }
 
-// Attach to button
+// Attach click listener
 window.addEventListener("load", () => {
   document.getElementById("runBtn").addEventListener("click", runSelectedModel);
 });
