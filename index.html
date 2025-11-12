@@ -5,8 +5,13 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>Walmart Weekly Sales Prediction (Regression Models)</title>
 
+  <!-- XGBoost JS Model (from m2cgen) -->
+  <script src="XGBoost_WalmartData.js"></script>
+
   <!-- ONNX Runtime -->
   <script src="https://cdn.jsdelivr.net/npm/onnxruntime-web/dist/ort.min.js"></script>
+
+  <!-- Main Script -->
   <script defer src="index.js"></script>
 
   <style>
@@ -31,8 +36,6 @@
       box-shadow: 0 2px 6px rgba(0, 0, 0, 0.1);
     }
 
-    h2 { color: #2d3748; }
-
     .form-grid {
       display: flex;
       gap: 40px;
@@ -50,7 +53,7 @@
     }
 
     input[type="number"], select {
-      width: 80%;
+      width: 70%;   /* Decreased width */
       padding: 6px;
       margin-top: 4px;
       border: 1px solid #ccc;
@@ -91,30 +94,27 @@
 
       <!-- LEFT COLUMN -->
       <div class="col">
-        <label>Store ID:</label><input type="number" id="input0" step="any">
+        <label>Store ID:</label><input type="number" id="input0">
         <label>Is Holiday:</label>
         <select id="input1">
           <option value="">--Select--</option>
           <option value="0">No</option>
           <option value="1">Yes</option>
         </select>
-
-        <label>Department:</label><input type="number" id="input2" step="any">
-        <label>Temperature (°F):</label><input type="number" id="input3" step="any">
-        <label>Fuel Price ($):</label><input type="number" id="input4" step="any">
-
-        <label>MarkDown1:</label><input type="number" id="input5" step="any">
-        <label>MarkDown2:</label><input type="number" id="input6" step="any">
-        <label>MarkDown3:</label><input type="number" id="input7" step="any">
+        <label>Department:</label><input type="number" id="input2">
+        <label>Temperature (°F):</label><input type="number" id="input3">
+        <label>Fuel Price ($):</label><input type="number" id="input4">
+        <label>MarkDown1:</label><input type="number" id="input5">
+        <label>MarkDown2:</label><input type="number" id="input6">
+        <label>MarkDown3:</label><input type="number" id="input7">
       </div>
 
       <!-- RIGHT COLUMN -->
       <div class="col">
-        <label>MarkDown4:</label><input type="number" id="input8" step="any">
-        <label>MarkDown5:</label><input type="number" id="input9" step="any">
-
-        <label>CPI:</label><input type="number" id="input10" step="any">
-        <label>Unemployment (%):</label><input type="number" id="input11" step="any">
+        <label>MarkDown4:</label><input type="number" id="input8">
+        <label>MarkDown5:</label><input type="number" id="input9">
+        <label>CPI:</label><input type="number" id="input10">
+        <label>Unemployment (%):</label><input type="number" id="input11">
 
         <label>Store Type:</label>
         <select id="input12">
@@ -124,10 +124,10 @@
           <option value="3">C</option>
         </select>
 
-        <label>Store Size (sq ft):</label><input type="number" id="input13" step="any">
-        <label>Year:</label><input type="number" id="input14" step="any">
-        <label>Month:</label><input type="number" id="input15" step="any">
-        <label>Week:</label><input type="number" id="input16" step="any">
+        <label>Store Size (sq ft):</label><input type="number" id="input13">
+        <label>Year:</label><input type="number" id="input14">
+        <label>Month:</label><input type="number" id="input15">
+        <label>Week:</label><input type="number" id="input16">
       </div>
     </div>
 
@@ -138,6 +138,7 @@
         <option value="MLP_WalmartData.onnx">MLP</option>
         <option value="Deep_WalmartData.onnx">Deep Learning with 2 Layers</option>
         <option value="Hybrid_WalmartData.onnx">Linear plus Nonlinear</option>
+        <option value="xgboost_js">XGBoost</option>
       </select>
       <button id="runBtn" class="btn" disabled>Predict Sales</button>
     </div>
@@ -150,16 +151,13 @@
 
   <script>
     function validateInputs() {
-      let allFilled = true;
+      let filled = true;
       for (let i = 0; i < 17; i++) {
-        const el = document.getElementById(`input${i}`);
-        if (el.tagName === "SELECT") {
-          if (el.value === "") allFilled = false;
-        } else if (el.value === "") {
-          allFilled = false;
-        }
+        let el = document.getElementById(`input${i}`);
+        if (el.tagName === "SELECT" && el.value === "") filled = false;
+        if (el.tagName === "INPUT" && el.value.trim() === "") filled = false;
       }
-      document.getElementById("runBtn").disabled = !allFilled;
+      document.getElementById("runBtn").disabled = !filled;
     }
 
     window.addEventListener("DOMContentLoaded", () => {
