@@ -49,7 +49,7 @@ async function runONNXModel(modelFile) {
 async function runSelectedModel() {
   const model = document.getElementById("modelSelect").value;
 
-  if (model === "xgboost_js") {
+  if (model === "XGBoost_WalmartData.js") {
     runXGBModel();
   } else {
     await runONNXModel(model);
