@@ -1,4 +1,4 @@
-// Validate inputs: enable button only when all 17 are filled
+// --- Validate inputs ---
 function validateInputs() {
   let ok = true;
   for (let i = 0; i < 17; i++) {
@@ -8,7 +8,7 @@ function validateInputs() {
   document.getElementById("runBtn").disabled = !ok;
 }
 
-// Collect inputs as Float32Array
+// --- Collect inputs as Float32Array ---
 function collectInputs() {
   const x = new Float32Array(17);
   for (let i = 0; i < 17; i++) {
@@ -17,7 +17,7 @@ function collectInputs() {
   return x;
 }
 
-// Run selected model
+// --- Run selected model ---
 async function runSelectedModel() {
   const outputText = document.getElementById("outputText");
   const btn = document.getElementById("runBtn");
@@ -25,26 +25,29 @@ async function runSelectedModel() {
 
   try {
     btn.disabled = true;
-    outputText.textContent = `Loading ${modelFile} and running inference...`;
+    outputText.textContent = `Running ${modelFile}...`;
 
     const x = collectInputs();
+
+    // --- JS model case (m2cgen exported) ---
+    if (modelFile === "XGBoost_WalmartData") {
+      const pred = score(Array.from(x)); // "score" defined in xgb_model.js
+      outputText.innerHTML = `
+        <div><b>Model:</b> XGBoost</div>
+        <div><b>Predicted Sales:</b> $${Number(pred).toFixed(2)}</div>
+      `;
+      return;
+    }
+
+    // --- ONNX model case ---
     const tensorX = new ort.Tensor("float32", x, [1, 17]);
-
-    // Load session 
     const session = await ort.InferenceSession.create(`./${modelFile}?v=${Date.now()}`);
-
-    // Use the first declared input name from the model
     const inputName = session.inputNames && session.inputNames.length ? session.inputNames[0] : "input1";
-
-    // Run inference
     const results = await session.run({ [inputName]: tensorX });
-
-    // Read first output tensor
     const firstOutput = results[session.outputNames?.[0]] || Object.values(results)[0];
     const data = firstOutput.data;
-    const pred = Array.isArray(data) ? data[0] : data[0]; // Float32Array
+    const pred = Array.isArray(data) ? data[0] : data[0];
 
-    // Render prediction
     outputText.innerHTML = `
       <div><b>Model:</b> ${modelFile.replace(".onnx","")}</div>
       <div><b>Predicted Sales:</b> $${Number(pred).toFixed(2)}</div>
@@ -53,12 +56,11 @@ async function runSelectedModel() {
     console.error(e);
     outputText.innerHTML = `<span style="color:#c53030">Error: ${e.message}</span>`;
   } finally {
-    // Re-validate to restore proper state
     validateInputs();
   }
 }
 
-// Hook up events after page loads
+// --- Initialize events ---
 window.addEventListener("load", () => {
   for (let i = 0; i < 17; i++) {
     const el = document.getElementById(`input${i}`);
