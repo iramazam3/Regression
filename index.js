@@ -12,7 +12,7 @@ function formatCurrency(num) {
   return num.toLocaleString("en-US", { style: "currency", currency: "USD" });
 }
 
-// Run selected ONNX regression model
+// Run ONNX Model
 async function runSelectedModel() {
   const modelFile = document.getElementById("modelSelect").value;
   const outputText = document.getElementById("outputText");
@@ -25,18 +25,15 @@ async function runSelectedModel() {
     const x = collectInputs();
     const tensorX = new ort.Tensor("float32", x, [1, 17]);
 
-    // Load model
     const session = await ort.InferenceSession.create(`./${modelFile}?v=${Date.now()}`);
     const inputName = session.inputNames[0] || "input";
     const results = await session.run({ [inputName]: tensorX });
 
-    // Extract first output tensor
-    const firstOutput = results[session.outputNames?.[0]] || Object.values(results)[0];
-    const prediction = firstOutput.data[0];
+    const outputTensor = results[session.outputNames?.[0]] || Object.values(results)[0];
+    const prediction = outputTensor.data[0];
 
-    // Display prediction
     outputText.innerHTML = `
-      <div><b>Model:</b> ${modelFile.replace(".onnx", "")}</div>
+      <div><b>Model:</b> ${modelFile.replace(".onnx","")}</div>
       <div><b>Predicted Weekly Sales:</b> ${formatCurrency(prediction)}</div>
     `;
   } catch (e) {
@@ -47,7 +44,7 @@ async function runSelectedModel() {
   }
 }
 
-// Attach click listener
+// Button listener
 window.addEventListener("load", () => {
   document.getElementById("runBtn").addEventListener("click", runSelectedModel);
 });
